@@ -1,7 +1,22 @@
 package store;
 
+import store.domain.product.ProductRepository;
+import store.domain.promotion.PromotionRepository;
+import store.infrastructure.product.ProductFileReader;
+import store.infrastructure.promotion.PromotionFileReader;
+import store.view.OutputView;
+
 public class Application {
-    public static void main(String[] args) {
-        // TODO: 프로그램 구현
-    }
+
+  public static void main(String[] args) {
+    ProductRepository productRepository = new ProductFileReader();
+    PromotionRepository promotionRepository = new PromotionFileReader();
+    OutputView outputView = new OutputView(productRepository, promotionRepository);
+
+    System.out.println("---------- 상품 출력 ----------");
+    outputView.printProducts();
+    System.out.println();
+    System.out.println("---------- 행사 출력 ----------");
+    outputView.printPromotions();
+  }
 }
