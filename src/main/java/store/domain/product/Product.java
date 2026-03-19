@@ -5,7 +5,7 @@ import store.domain.stock.Stock;
 public class Product {
   private final String name;
   private final int price;
-  private Stock stock;
+  private final Stock stock;
   private final String promotion; // nullable
 
   public Product(String name, int price, Stock stock, String promotion) {
@@ -22,6 +22,8 @@ public class Product {
   }
 
   public Stock getStock() { return stock; }
+
+  public String getPromotion() { return promotion; }
 
   @Override
   public String toString() {

@@ -13,10 +13,12 @@ public class Application {
     PromotionRepository promotionRepository = new PromotionFileReader();
     OutputView outputView = new OutputView(productRepository, promotionRepository);
 
-    System.out.println("---------- 상품 출력 ----------");
+    System.out.println("---------- 모든 상품 출력 ----------");
     outputView.printProducts();
     System.out.println();
     System.out.println("---------- 행사 출력 ----------");
     outputView.printPromotions();
+    System.out.println("---------- 프로모션 출력 ----------");
+    outputView.printPromotionProducts();
   }
 }

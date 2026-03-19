@@ -1,5 +1,6 @@
 package store.view;
 
+import store.domain.product.Product;
 import store.domain.product.ProductRepository;
 import store.domain.promotion.PromotionRepository;
 
@@ -19,5 +20,11 @@ public class OutputView {
 
   public void printPromotions() {
     promotionRepository.findAll().forEach(System.out::println);
+  }
+
+  public void printPromotionProducts() {
+    productRepository.findAll().stream()
+            .filter(Product::hasPromotion)
+            .forEach(System.out::println);
   }
 }
