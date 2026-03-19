@@ -1,5 +1,7 @@
 package store.infrastructure.product;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import store.domain.product.Product;
 import store.domain.product.ProductRepository;
 
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import store.domain.stock.Stock;
 
 public class ProductFileReader implements ProductRepository {
 
@@ -64,7 +67,7 @@ public class ProductFileReader implements ProductRepository {
       throw new IllegalStateException("[ERROR] 상품 파일을 읽는 중 오류가 발생했습니다.", e);
     }
 
-    return result;
+    return mergeProducts(result);
   }
 
   private Product parseLine(String line) {
@@ -75,7 +78,12 @@ public class ProductFileReader implements ProductRepository {
     int quantity = Integer.parseInt(parts[2].trim());
     String promotion = parsePromotion(parts[3].trim());
 
-    return new Product(name, price, quantity, promotion);
+
+    Stock stock = (promotion != null)
+            ? new Stock(0, quantity)   // 프로모션 재고
+            : new Stock(quantity, 0);  // 일반 재고
+
+    return new Product(name, price, stock, promotion);
   }
 
   private String parsePromotion(String value) {
@@ -83,5 +91,28 @@ public class ProductFileReader implements ProductRepository {
       return null;
     }
     return value;
+  }
+
+  private List<Product> mergeProducts(List<Product> rawProducts) {
+    Map<String, Product> merged = new LinkedHashMap<>();
+
+    for (Product product : rawProducts) {
+      if (!merged.containsKey(product.getName())) {
+        merged.put(product.getName(), product);
+        continue;
+      }
+      Product existing = merged.get(product.getName());
+      existing.getStock().merge(product.getStock());
+    }
+
+    return new ArrayList<>(merged.values());
+  }
+
+  public List<Product> parse(List<String> lines) {
+    List<Product> rawProducts = lines.stream()
+            .map(this::parseLine)
+            .collect(Collectors.toList());
+
+    return mergeProducts(rawProducts);
   }
 }
