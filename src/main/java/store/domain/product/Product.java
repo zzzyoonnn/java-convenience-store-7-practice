@@ -16,6 +16,7 @@ public class Product {
   }
 
   public String getName() { return name; }
+  public int getPrice() { return price; }
 
   public boolean hasPromotion() {
     return promotion != null;
